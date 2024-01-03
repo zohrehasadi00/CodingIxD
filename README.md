@@ -1,5 +1,5 @@
-# CodingIxD
-## Body data project: Balance
+## CodingIxD - Body data project: Balance
+
 
 # Project Overview
 Balance is a project focused on integrating Fitbit data to visually represent both heart rate and stress levels in real-time. Our primary objective is to offer a unique and engaging visualization of this data.
