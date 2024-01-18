@@ -1,0 +1,4 @@
+https://www.fitbit.com/oauth2/authorize?client_id=23RN4S&response_type=code
+&code_challenge=<code_challenge>&code_challenge_method=S256
+&scope=activity%20heartrate%20location%20nutrition%20oxygen_saturation%20profile
+%20respiratory_rate%20settings%20sleep%20social%20temperature%20weight
