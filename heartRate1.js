@@ -10,13 +10,13 @@ const clientId = '23RMZN';
 const clientSecret = '722a1a15200ffb520e355a7a40328b1d';
 const redirectUri = 'http://localhost';
 const authorizeUrl = 'https://www.fitbit.com/oauth2/authorize';
-//const accessToken = ''
+const accessToken = 'eyJhbGciOiJIUzl1NiJ9.eyJhdWQiOilyM1JNWk4iLCJzdWliOil3TVdWNjkiLCJpc3MiOSDTQtvlIQ1URejaNX8-dJrmLZw2pzvYdcOqE'
 
 app.use(bodyParser.urlencoded({ extended: true }));
 
 // Redirect to Fitbit authorization page
 app.get('/authorize', (req, res) => {
-  res.redirect(`${authorizeUrl}?response_type=code&client_id=${clientId}&redirect_uri=${redirectUri}&scope=heartrate`);
+  res.redirect(`${"https://www.fitbit.com/oauth2/authorize"}?response_type=code&client_id=${'23RMZN'}&redirect_uri=${http://localhost}&scope=heartrate`);
 });
 
 // Handle callback from Fitbit
@@ -26,14 +26,14 @@ app.get('/callback', async (req, res) => {
   // Exchange code for access token
   const tokenResponse = await axios.post('https://api.fitbit.com/oauth2/token', 
     querystring.stringify({
-      client_id: clientId,
+      client_id: '23RMZN',
       grant_type: 'authorization_code',
-      redirect_uri: redirectUri,
+      redirect_uri: 'http://localhost',
       code,
     }), {
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
-        'Authorization': `Basic ${Buffer.from(`${clientId}:${clientSecret}`).toString('base64')}`,
+        'Authorization': `Basic ${Buffer.from(`${'23RMZN'}:${'722a1a15200ffb520e355a7a40328b1d'}`).toString('base64')}`,
       },
     });
 
@@ -42,7 +42,7 @@ app.get('/callback', async (req, res) => {
   // Use access token to make API request for heart rate data
   const heartRateResponse = await axios.get('https://api.fitbit.com/1/user/-/activities/heart/date/today/1d.json', {
     headers: {
-      'Authorization': `Bearer ${accessToken}`,
+      'Authorization': `Bearer ${'eyJhbGciOiJIUzl1NiJ9.eyJhdWQiOilyM1JNWk4iLCJzdWliOil3TVdWNjkiLCJpc3MiOSDTQtvlIQ1URejaNX8-dJrmLZw2pzvYdcOqE'}`,
     },
   });
 
