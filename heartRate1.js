@@ -1,61 +1,75 @@
-const express = require('express');
 const axios = require('axios');
-const querystring = require('querystring');
-const bodyParser = require('body-parser');
-
-const app = express();
-const port = 3000;
-
 const clientId = '23RMZN';
 const clientSecret = '722a1a15200ffb520e355a7a40328b1d';
 const redirectUri = 'http://localhost';
 const authorizeUrl = 'https://www.fitbit.com/oauth2/authorize';
-const accessToken = 'eyJhbGciOiJIUzl1NiJ9.eyJhdWQiOilyM1JNWk4iLCJzdWliOil3TVdWNjkiLCJpc3MiOSDTQtvlIQ1URejaNX8-dJrmLZw2pzvYdcOqE'
+const accessToken = 'eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIyM1JNWk4iLCJzdWIiOiI3TVdWNjkiLCJpc3MiOiJGaXRiaXQiLCJ0eXAiOiJhY2Nlc3NfdG9rZW4iLCJzY29wZXMiOiJyc29jIHJlY2cgcnNldCByb3h5IHJudXQgcnBybyByc2xlIHJjZiByYWN0IHJsb2MgcnJlcyByd2VpIHJociBydGVtIiwiZXhwIjoxNzA1ODUxNTY2LCJpYXQiOjE3MDU4MjI3NjZ9.KNai6tG1dnMpi9B51wfJ8C_PS6VIPALc93fwSVx-S1M'
+const apiUrl = 'https://api.fitbit.com/1/user/-/activities/heart/date/today/1w.json';
 
-app.use(bodyParser.urlencoded({ extended: true }));
+const minReadingsThreshold = 10; // Adjust as needed
 
-// Redirect to Fitbit authorization page
-app.get('/authorize', (req, res) => {
-  res.redirect(`${"https://www.fitbit.com/oauth2/authorize"}?response_type=code&client_id=${'23RMZN'}&redirect_uri=${http://localhost}&scope=heartrate`);
-});
-
-// Handle callback from Fitbit
-app.get('/callback', async (req, res) => {
-  const code = req.query.code;
-
-  // Exchange code for access token
-  const tokenResponse = await axios.post('https://api.fitbit.com/oauth2/token', 
-    querystring.stringify({
-      client_id: '23RMZN',
-      grant_type: 'authorization_code',
-      redirect_uri: 'http://localhost',
-      code,
-    }), {
+// Function to fetch heart rate data from Fitbit API : https://dev.fitbit.com/build/reference/device-api/heart-rate/
+async function fetchHeartRateData() {
+  try {
+    const response = await axios.get(apiUrl, {
       headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-        'Authorization': `Basic ${Buffer.from(`${'23RMZN'}:${'722a1a15200ffb520e355a7a40328b1d'}`).toString('base64')}`,
+        'Authorization': `Bearer ${accessToken}`,
       },
     });
 
-  const accessToken = tokenResponse.data.access_token;
+    const heartRateData = response.data['activities-heart'];
 
-  // Use access token to make API request for heart rate data
-  const heartRateResponse = await axios.get('https://api.fitbit.com/1/user/-/activities/heart/date/today/1d.json', {
-    headers: {
-      'Authorization': `Bearer ${'eyJhbGciOiJIUzl1NiJ9.eyJhdWQiOilyM1JNWk4iLCJzdWliOil3TVdWNjkiLCJpc3MiOSDTQtvlIQ1URejaNX8-dJrmLZw2pzvYdcOqE'}`,
-    },
-  });
+    // Process heart rate data and calculate average for each day
+    const heartRateDictionary = {};
+    heartRateData.forEach(reading => {
+      const date = new Date(reading.dateTime);
+      const day = date.toISOString().split('T')[0];
+      const heartRate = reading.value.restingHeartRate;
+      if (heartRate !== undefined || !isNaN(heartRate)) {
+        if (!heartRateDictionary[day]) {
+          heartRateDictionary[day] = { sum: 0, count: 0 };
+        }
+        
+       heartRateDictionary[day].sum += heartRate;
+        heartRateDictionary[day].count += 1;
+      }
+    }) ;
 
-  // Process heart rate data
-  const heartRateData = heartRateResponse.data;
-  console.log('Heart Rate Data:', heartRateData);
+    // Calculate average heart rate for each day
+    const resultDictionary = {};
+    for (const [day, values] of Object.entries(heartRateDictionary)) {
+      if (values.count >= minReadingsThreshold) {
+        const averageHeartRate = values.sum / values.count;
+        resultDictionary[day] = averageHeartRate.toFixed(2);
+      }else {
+        resultDictionary[day] = 'no meditation';
+      }
+    }
 
-  // Calculate average heart rate during time x (from waking up to meditation)
-  // Your logic for time x calculation goes here
+    return resultDictionary;
+  } catch (error) {
+    console.error('Error fetching heart rate data:', error.response ? error.response.data : error.message);
+    throw error;
+  }
+}
 
-  res.send('Heart Rate Data retrieved and processed!');
-});
+// Function to print the heart rate dictionary
+function printHeartRateDictionary(heartRateDictionary) {
+  console.log('Heart Rate Data:');
+  console.log(heartRateDictionary); // Corrected from print to console.log
+  for (const [day, value] of Object.entries(heartRateDictionary)) {
+    console.log(`${day}: ${value}`);
+  }
+}
 
-app.listen(port, () => {
-  console.log(`Server running at http://localhost:${port}`);
-});
+// Run the script
+async function runScript() {
+  try {
+    const heartRateDictionary = await fetchHeartRateData();
+    printHeartRateDictionary(heartRateDictionary);
+  } catch (error) {
+    console.error('Script failed:', error.message);
+  }
+}
+
+runScript();
