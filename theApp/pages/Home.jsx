@@ -11,11 +11,6 @@ function Home() {
     setStressLevel(level);
   };
 
-  const redirectToSettings = () => {
-    // Redirect to the settings page
-    window.location.href = '/settings';
-  };
-
   return (
     <>
       <div>
