@@ -49,3 +49,11 @@
 .button-container button {
   margin-bottom: 15px; /* Adjust the value for the desired spacing */
 }
+
+.inliner {
+  display: inline-block;
+}
+
+.settings{
+  padding-left: 1em;
+}

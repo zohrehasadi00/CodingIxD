@@ -1,32 +1,24 @@
+import React from 'react';
 import { useState } from 'react';
-import './App.css';
+import { Route, createBrowserRouter, createRoutesFromElements, RouterProvider } from 'react-router-dom';
+import Home from '../pages/Home.jsx';
+import Settings from '../pages/Settings.jsx';
 
-function App() {
-  const [stressLevel, setStressLevel] = useState(2);
 
-  const stressLevels = ["very stressed", "stressed", "neutral", "calm", "very calm"];
+const router = createBrowserRouter(
+  createRoutesFromElements(
+    <Route>
+      <Route path="/" element={<Home />} />
+      <Route path="/settings" element={<Settings />} />
+    </Route>
+  )
+)
 
-  const handleButtonClick = (level) => {
-    setStressLevel(level);
-  };
+function App({routes}) {
 
   return (
     <>
-      <div>
-        {/* Add your logo links here */}
-      </div>
-      <h1>Stress level</h1>
-      <div className="card">
-        {/* Container div for stacking buttons */}
-        <div className="button-container">
-          {stressLevels.map((level, index) => (
-            <button key={index} onClick={() => handleButtonClick(index)}>
-              {level}
-            </button>
-          ))}
-        </div>
-        <p>Last pressed: {stressLevels[stressLevel]}</p>
-      </div>
+      <RouterProvider router={router}/>
     </>
   );
 }
