@@ -1,0 +1,174 @@
+// fade function from https://gitlab.kh-berlin.de/elab/examples/arduino-sine-fade/-/blob/main/sine_fade/sine_fade.ino
+#include <AccelStepper.h>  // from https://www.airspayce.com/mikem/arduino/AccelStepper/
+
+//https://www.arduino.cc/reference/en/language/functions/time/millis/ <- for later reference concerning threading
+//https://docs.espressif.com/projects/esp-idf/en/latest/esp32/api-reference/system/pthread.html <- for later reference concerning threading
+
+
+// https://www.rapidtables.com/web/color/RGB_Color.html for the colour codes
+
+AccelStepper stepper1(AccelStepper::DRIVER, 18, 5);  //STEP then DIR
+
+const float MS = 16.00;    // Put the Number of Microsteps defined through the 3 pins on the A4988 here. remember to add two decimals: "xx.00"
+const float SPR = 200.00;  // Put the Number of Steps your specific stepper takes per revolution. remember to add two decimals: "xx.00"
+
+//The Ratio allows to input the desired position in revolutions instead of steps.
+const float Ratio1 = ((MS * (SPR / 360.00)) * 360.00);  //((MicroSteps * (full steps per revolution / full revolution in degrees)) || Decimal places for more precise float values
+
+
+
+
+//––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––
+
+int pinR = 15;
+int pinG = 2;
+int pinB = 4;
+
+bool fadeON = false;
+
+bool isWhite = true;
+
+int HR = 100; // trial heart rate
+
+// Stage 1: ~ 80 -> 90
+
+int R1 = 0;
+int G1 = 0;
+int B1 = 204;
+
+// Stage 2: ~ 90 -> 100
+
+int R2 = 0;
+int G2 = 0;
+int B2 = 255;
+
+// Stage 3: ~ 100 -> 110
+
+int R3 = 51;
+int G3 = 51;
+int B3 = 255;
+
+// Stage 4: ~ 110 -> 120
+
+int R4 = 102;
+int G4 = 102;
+int B4 = 255;
+
+
+// Stage 5: > 120
+
+int R5 = 255;
+int G5 = 255;
+int B5 = 255;
+
+
+//Acceleration
+
+float AC = 3000.00; 
+
+//––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––
+
+
+
+void setup() {
+  
+ Serial.begin(115200);
+
+  //For Motor
+  stepper1.setMaxSpeed(2000);
+  stepper1.setAcceleration(AC);
+
+  //For LED
+  pinMode(pinR, OUTPUT);
+  pinMode(pinG, OUTPUT);
+  pinMode(pinB, OUTPUT);
+
+  // analogWrite(pinB, 255);
+
+
+  // depending on HR switch to inital stage
+  
+    switch(HR){
+    
+    case 80 ... 90:
+      analogWrite(pinR, R1);
+      analogWrite(pinG, G1);
+      analogWrite(pinB, B1);
+      break;
+
+    case 90 ... 100:
+      analogWrite(pinR, R2);
+      analogWrite(pinG, G2);
+      analogWrite(pinB, B2);
+      break;
+
+    case 100 ... 110:
+      analogWrite(pinR, R3);
+      analogWrite(pinG, G3);
+      analogWrite(pinB, B3);
+      break;
+
+    case 110 ... 120:
+      analogWrite(pinR, R4);
+      analogWrite(pinG, G4);
+      analogWrite(pinB, B4);
+      break;
+
+    case 120 ... 130:
+      analogWrite(pinR, R5);
+      analogWrite(pinG, G5);
+      analogWrite(pinB, B5);
+      break;
+  }
+  
+  stepper1.moveTo(0.25 * Ratio1);  //go to a new position, in this case 0.25 revolutions clockwise.
+}
+
+void loop() {
+    stepper1.run();
+    
+    if (stepper1.distanceToGo() == 0) {
+    fade(pinR, pinG, 255, 0, 150)
+    }
+    
+    if (pinR < 5 AND pinG < 5){
+      isWhite = false;
+    }
+    
+    if (!isWhite) {
+      stepper1.setAcceleration(AC - 150.00);
+    }
+    
+    if (AC <= 0) {
+      pinMode(pinR, LOW);
+      pinMode(pinG, LOW);
+      pinMode(pinB, LOW);
+      break;
+    }
+}
+
+void fade(int pinA, int pinB, byte brightB, byte brightA, int fadeTime) {
+
+  for (int i = 90; i < 180 + 90; i++) {
+    float angle = radians(i);
+    int t = (255 / 2) + (255 / 2) * sin(angle);
+    byte brightness = map(t, 0, 255, brightA, brightB);
+    analogWrite(pinA, brightness);
+    brightness = constrain(brightness, 0, 220);
+    analogWrite(pinB, brightness);
+
+
+      // Serial.print(255);
+      // Serial.print(",");
+      // Serial.print(fadeTime / 180.00);
+      // Serial.print(",");
+      // Serial.println(brightness);
+
+
+    delay(fadeTime / 180.00);
+  }
+}
+
+void fadetocolour (int pinA, int pinB, byte brightB, byte brightA, int fadeTime) {
+  //implement later
+}
