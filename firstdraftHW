@@ -28,13 +28,13 @@ bool fadeON = false;
 
 bool isWhite = true;
 
-int HR = 100; // trial heart rate
+int HR = 100; // trial heart rate <- needs to be adjusted in terms of individual base rate
 
 // Stage 1: ~ 80 -> 90
 
 int R1 = 0;
 int G1 = 0;
-int B1 = 204;
+int BE1 = 255;
 
 // Stage 2: ~ 90 -> 100
 
@@ -86,29 +86,29 @@ void setup() {
   // analogWrite(pinB, 255);
 
 
-  // depending on HR switch to inital stage
+  // depending on HR switch to inital stage <- also need for individual base rate adjustment
   
     switch(HR){
     
-    case 80 ... 90:
+    case 80 ... 89:
       analogWrite(pinR, R1);
       analogWrite(pinG, G1);
-      analogWrite(pinB, B1);
+      analogWrite(pinB, BE1);
       break;
 
-    case 90 ... 100:
+    case 90 ... 99:
       analogWrite(pinR, R2);
       analogWrite(pinG, G2);
       analogWrite(pinB, B2);
       break;
 
-    case 100 ... 110:
+    case 100 ... 109:
       analogWrite(pinR, R3);
       analogWrite(pinG, G3);
       analogWrite(pinB, B3);
       break;
 
-    case 110 ... 120:
+    case 110 ... 119:
       analogWrite(pinR, R4);
       analogWrite(pinG, G4);
       analogWrite(pinB, B4);
@@ -128,10 +128,10 @@ void loop() {
     stepper1.run();
     
     if (stepper1.distanceToGo() == 0) {
-    fade(pinR, pinG, 255, 0, 150)
+    fade(pinR, pinG, 255, 0, 150);
     }
     
-    if (pinR < 5 AND pinG < 5){
+    if ((pinR < 5) && (pinG < 5)){
       isWhite = false;
     }
     
@@ -143,8 +143,7 @@ void loop() {
       pinMode(pinR, LOW);
       pinMode(pinG, LOW);
       pinMode(pinB, LOW);
-      break;
-    }
+    } 
 }
 
 void fade(int pinA, int pinB, byte brightB, byte brightA, int fadeTime) {
