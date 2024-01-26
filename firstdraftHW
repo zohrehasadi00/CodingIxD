@@ -24,11 +24,17 @@ int pinR = 15;
 int pinG = 2;
 int pinB = 4;
 
+byte stepcount = 1; //counter for rotations;
+byte ValR = 0;
+byte ValG = 0;
+int counter = 0; //counter for offset for fadetocolour function
+
 bool fadeON = false;
 
 bool isWhite = true;
 
-int HR = 100; // trial heart rate <- needs to be adjusted in terms of individual base rate
+int HR = 125; // trial heart rate <- needs to be adjusted in terms of individual base rate
+int stage = -1; // initialisation for 2nd switch case
 
 // Stage 1: ~ 80 -> 90
 
@@ -83,91 +89,82 @@ void setup() {
   pinMode(pinG, OUTPUT);
   pinMode(pinB, OUTPUT);
 
-  // analogWrite(pinB, 255);
-
 
   // depending on HR switch to inital stage <- also need for individual base rate adjustment
   
     switch(HR){
     
     case 80 ... 89:
+      ValR = R1;
+      ValG = G1;
       analogWrite(pinR, R1);
       analogWrite(pinG, G1);
       analogWrite(pinB, BE1);
       break;
 
     case 90 ... 99:
+      ValR = R2;
+      ValG = G2;
       analogWrite(pinR, R2);
       analogWrite(pinG, G2);
       analogWrite(pinB, B2);
       break;
 
     case 100 ... 109:
+      ValR = R3;
+      ValG = G3;
       analogWrite(pinR, R3);
       analogWrite(pinG, G3);
       analogWrite(pinB, B3);
       break;
 
     case 110 ... 119:
+      ValR = R4;
+      ValG = G4;
       analogWrite(pinR, R4);
       analogWrite(pinG, G4);
       analogWrite(pinB, B4);
       break;
 
     case 120 ... 130:
+      ValR = R5;
+      ValG = G5;
       analogWrite(pinR, R5);
       analogWrite(pinG, G5);
       analogWrite(pinB, B5);
       break;
   }
-  
-  stepper1.moveTo(0.25 * Ratio1);  //go to a new position, in this case 0.25 revolutions clockwise.
-}
+
+  }
 
 void loop() {
-    stepper1.run();
-    
-    if (stepper1.distanceToGo() == 0) {
-    fade(pinR, pinG, 255, 0, 150);
+  
+  stepper1.run();
+  
+  if (stepper1.distanceToGo() == 0) {
+    if (!fadeON) {
+      counter = counter + 5;
+      fadetocolour(pinR, pinG);
+      stepper1.moveTo(stepcount * Ratio1);  //go to a new position, in this case always 1 rotation further in same direction
+      stepcount = stepcount + 1;
+      fadeON = true;
+    } else {
+      counter = counter + 5;
+      fadetocolour(pinR, pinG);
+      stepper1.moveTo(stepcount * Ratio1);  //go to a new position, in this case always 1 rotation further in same direction
+      stepcount = stepcount + 1;
+      fadeON = false;
     }
-    
-    if ((pinR < 5) && (pinG < 5)){
-      isWhite = false;
-    }
-    
-    if (!isWhite) {
-      stepper1.setAcceleration(AC - 150.00);
-    }
-    
-    if (AC <= 0) {
-      pinMode(pinR, LOW);
-      pinMode(pinG, LOW);
-      pinMode(pinB, LOW);
-    } 
-}
-
-void fade(int pinA, int pinB, byte brightB, byte brightA, int fadeTime) {
-
-  for (int i = 90; i < 180 + 90; i++) {
-    float angle = radians(i);
-    int t = (255 / 2) + (255 / 2) * sin(angle);
-    byte brightness = map(t, 0, 255, brightA, brightB);
-    analogWrite(pinA, brightness);
-    brightness = constrain(brightness, 0, 220);
-    analogWrite(pinB, brightness);
-
-
-      // Serial.print(255);
-      // Serial.print(",");
-      // Serial.print(fadeTime / 180.00);
-      // Serial.print(",");
-      // Serial.println(brightness);
-
-
-    delay(fadeTime / 180.00);
   }
 }
 
-void fadetocolour (int pinA, int pinB, byte brightB, byte brightA, int fadeTime) {
-  //implement later
+
+void fadetocolour (int pinA, int pinB) { //gradually decreases both green and red light so everything turns bluer and bluer
+
+  byte ValA = ValA - counter;
+  byte ValB = ValB - counter;
+  analogWrite(pinA, ValA);
+  analogWrite(pinB, ValB);
+  delay(180.00);
+  
 }
