@@ -1,0 +1,36 @@
+.slider-container {
+    width: 400px; /* Adjust width as needed */
+    height: 40px; /* Adjust height as needed to increase clickable area */
+    display: flex;
+    align-items: center;
+    padding: 10px; /* Increase padding to make the slider appear larger */
+  }
+  
+  .slider-container span {
+    flex: 0 0 auto;
+  }
+  
+  .slider {
+    flex: 1;
+    -webkit-appearance: none;
+    appearance: none;
+    outline: none;
+    background: linear-gradient(to right, blue, white);
+    border-radius: 10px;
+    margin: 0 10px;
+    height: 20px; /* Adjust height as needed */
+    font-size: 16px; /* Adjust font size to make the slider text larger */
+  }
+  
+  .slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 25px; /* Increase the width to expand the clickable area */
+    height: 25px; /* Increase the height to expand the clickable area */
+    background: transparent;
+    border: 3px solid #676767; /* Add border color */
+    border-radius: 50%;
+    cursor: pointer;
+  }
+  
+  
