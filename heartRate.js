@@ -3,7 +3,7 @@
 const yesterday = new Date();
 yesterday.setDate(yesterday.getDate() - 1);
 const dateYesterday = new Date(yesterday.toLocaleString('en-US', { timeZone: 'Europe/Berlin' })).toISOString().split('T')[0];
-console.log(dateYesterday);
+console.log("Yesterday's date:", dateYesterday);
 //const avgheartRate = json['activities-heart'][0].value;
 //console.log(avgheartRate);
 
@@ -24,38 +24,28 @@ fetch(heartRateDataDates, {
     headers: {"Authorization": "Bearer " + ACCESS_TOKEN}
 })
 .then(response => response.json())
-.then(json => console.log(json));
-/*
+//.then(json => console.log(json));
 .then(json => {
-  const { activitiesHeart } = json;
-  if (activitiesHeart && activitiesHeart.length > 0) {
-      const { startTime, endTime, restingHeartRate, value } = activitiesHeart[0].value.heartRateZones[1];
-      
-      console.log("startTime:", startTime);
-      console.log("endTime:", endTime);
-      console.log("restingHeartRate:", restingHeartRate);
+  const avgheartRate = json['activities-heart'][0].value;
+  console.log("Average heart rate from yesterday:", avgheartRate);
+  if (json['activities-heart-intraday']) {
+    const intradayData = json['activities-heart-intraday'];
+    
+    // Access the first and last elements of the 'dataset' array
+    const firstEntry = intradayData.dataset[0];
+    const lastEntry = intradayData.dataset[intradayData.dataset.length - 1];
+    
+    // Convert time strings to Date objects
+    const firstEntryTime = new Date(`2000-01-01T${firstEntry.time}`);
+    const lastEntryTime = new Date(`2000-01-01T${lastEntry.time}`);    
+    
+    // Calculate the time difference
+    const timeDifference = new Date(lastEntryTime - firstEntryTime);    
+    
+    // Format the time difference
+    const formattedTimeDifference = `${timeDifference.getUTCHours()}:${timeDifference.getUTCMinutes()}:${timeDifference.getUTCSeconds()}`;    console.log("Time difference between 1st and last heart rate:", formattedTimeDifference);
 
-      // Extracting heart rates between startTime and endTime
-      const heartRates = value.slice(value.findIndex(entry => entry.dateTime === startTime), value.findIndex(entry => entry.dateTime === endTime) + 1);
-      
-      // Calculating average heart rate
-      const avgHeartRate = heartRates.reduce((sum, entry) => sum + entry.value, 0) / heartRates.length;
-      console.log("avgHeartRate:", avgHeartRate);
   } else {
-      console.log("No heart rate data available for the specified date range.");
-  }
-})
-.catch(error => console.error("Error fetching heart rate data:", error));
-------
-
-fetch(API_URL, { headers })
-  .then(response => response.json())
-  .then(data => {
-    console.log('Heart Rate Data:', data);
-    console.log('\n\n');
-    console.log('Heart Rate Data:', data['activities-heart'][0].value);
-  })
-  .catch(error => {
-    console.error('Error fetching heart rate data:', error);
-  });
-*/
+    console.log("No intraday heart rate data available.");
+}
+});
