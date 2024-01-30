@@ -9,36 +9,37 @@ function Home() {
 
   const stressLevels = ["very stressed", "stressed", "neutral", "calm", "very calm"];
 
+  const handleSubmit = () => {
+    console.log({value});
+  };  
+
   const handleChange = (event) => {
     setValue(event.target.value);
   };
 
-    // Define grid style
-    const gridStyle = {
-      display: 'grid',
-      gridTemplateColumns: 'repeat(10, 1fr)',
-      gridGap: '5px',
-      marginBottom: '20px',
-    };
+  // Define grid style
+  const gridStyle = {
+    display: 'grid',
+    gridTemplateColumns: 'repeat(20, 1fr)',
+    gridGap: '10px',
+    marginBottom: '20px',
+  };
   
-    // Generate grid squares
-    const gridSquares = Array.from({ length: 100 }, (_, index) => (
-      <div key={index} style={{ width: '20px', height: '20px', border: '1px solid black', backgroundColor: index % 16 && index % 7 || index === 98 || index === 96 ? 'green' : 'transparent' }}></div>
-    ));
+  // Generate grid squares
+  const gridSquares = Array.from({ length: 100 }, (_, index) => (
+    <div key={index} style={{ width: '20px', height: '20px', border: '1px solid black', backgroundColor: index % 16 && index % 7 || index === 98 || index === 96 ? 'green' : 'transparent' }}></div>
+  ));
 
   return (
     <>
-      <div>
-        {/* Add your logo links here */}
-      </div>
-      <h1>Stress level</h1>
+      <h1>Balance</h1>
       <div className="card">
         <div>
           <div className='inliner'>
             {/* <p>Last pressed: {stressLevels[stressLevel]}</p> */}
           </div>
           <div className="slider-container">
-            <span>Calm</span>
+            <span style = {{ marginRight: '5px'}}>Calm</span>
             <input
               type="range"
               min="0"
@@ -47,17 +48,17 @@ function Home() {
               onChange={handleChange}
               className="slider"
             />
-            <span>Stressed</span>
+            <span style = {{ marginLeft: '5px'}}>Stressed</span>
           </div>
-          {/* Add a Link component for the settings button */}
-          <div className='inliner settings'>
+          <div style={{ display: 'flex', gap: '50px', alignItems: 'center', justifyContent: 'center', marginTop: '50px', marginBottom: '30px'}}>
+            <button onClick={handleSubmit}>Submit</button>
             <Link to="/settings">
-              <button className='settingsButton'>Settings</button>
+                <button className='settingsButton'>Settings</button>
             </Link>
           </div>
         </div>
       </div>
-      <h2 style={{ marginTop: '50px' }}>last 100 days</h2>
+      <h2 style={{ marginTop: '20px' }}>last 100 days</h2>
       {/* Display grid */}
       <div style={gridStyle}>{gridSquares}</div>
     </>

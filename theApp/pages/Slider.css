@@ -1,14 +1,9 @@
 .slider-container {
-    width: 400px; /* Adjust width as needed */
-    height: 40px; /* Adjust height as needed to increase clickable area */
-    display: flex;
-    align-items: center;
-    padding: 10px; /* Increase padding to make the slider appear larger */
-  }
-  
-  .slider-container span {
-    flex: 0 0 auto;
-  }
+  width: 100%; /* Adjust width as needed */
+  display: flex;
+  align-items: center;
+}
+
   
   .slider {
     flex: 1;

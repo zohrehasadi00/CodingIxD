@@ -41,15 +41,6 @@
   color: #888;
 }
 
-.button-container {
-  display: flex;
-  flex-direction: column; /* Stack buttons vertically */
-}
-
-.button-container button {
-  margin-bottom: 15px; /* Adjust the value for the desired spacing */
-}
-
 .inliner {
   display: inline-block;
 }
