@@ -1,9 +1,10 @@
 .slider-container {
-  width: 100%; /* Adjust width as needed */
+  width: 90%; /* Adjust width as needed */
+  margin: auto;
   display: flex;
   align-items: center;
+  justify-content: center;
 }
-
   
   .slider {
     flex: 1;
@@ -11,17 +12,18 @@
     appearance: none;
     outline: none;
     background: linear-gradient(to right, blue, white);
-    border-radius: 10px;
+    border-radius: 20px;
+    border: 1px solid #676767;
     margin: 0 10px;
-    height: 20px; /* Adjust height as needed */
+    height: 40px; /* Adjust height as needed */
     font-size: 16px; /* Adjust font size to make the slider text larger */
   }
   
   .slider::-webkit-slider-thumb {
     -webkit-appearance: none;
     appearance: none;
-    width: 25px; /* Increase the width to expand the clickable area */
-    height: 25px; /* Increase the height to expand the clickable area */
+    width: 40px; /* Increase the width to expand the clickable area */
+    height: 40px; /* Increase the height to expand the clickable area */
     background: transparent;
     border: 3px solid #676767; /* Add border color */
     border-radius: 50%;

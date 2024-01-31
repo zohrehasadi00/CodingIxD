@@ -1,15 +1,29 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import '../src/App.css';
 import './Slider.css';
 
+// Import your sound file
+import meditationSound from './gong.mp3';
+
 function Home() {
-  const [stressLevel, setStressLevel] = useState(2);
   const [value, setValue] = useState(0);
 
-  const stressLevels = ["very stressed", "stressed", "neutral", "calm", "very calm"];
+  // Create an Audio object with the sound file
+  const [meditationAudio, setMeditationAudio] = useState(null);
+
+  useEffect(() => {
+    // Preload the audio file
+    const audio = new Audio(meditationSound);
+    audio.preload = "auto";
+    setMeditationAudio(audio);
+  }, []);
 
   const handleSubmit = () => {
+    if (meditationAudio) {
+      // Play the sound when the button is clicked
+      meditationAudio.play();
+    }
     console.log({value});
   };  
 
@@ -17,29 +31,11 @@ function Home() {
     setValue(event.target.value);
   };
 
-  // Define grid style
-  const gridStyle = {
-    display: 'grid',
-    gridTemplateColumns: 'repeat(20, 1fr)',
-    gridGap: '10px',
-    marginBottom: '20px',
-  };
-  
-  // Generate grid squares
-  const gridSquares = Array.from({ length: 100 }, (_, index) => (
-    <div key={index} style={{ width: '20px', height: '20px', border: '1px solid black', backgroundColor: index % 16 && index % 7 || index === 98 || index === 96 ? 'green' : 'transparent' }}></div>
-  ));
-
   return (
     <>
-      <h1>Balance</h1>
-      <div className="card">
-        <div>
-          <div className='inliner'>
-            {/* <p>Last pressed: {stressLevels[stressLevel]}</p> */}
-          </div>
-          <div className="slider-container">
-            <span style = {{ marginRight: '5px'}}>Calm</span>
+      <h1 style={{ marginTop: '-150px', marginBottom: '120px'}}>How have you felt since your last meditation?</h1>
+        <div className="slider-container">
+          <span style = {{ marginRight: '30px', fontSize: '25px'}}>Calm</span>
             <input
               type="range"
               min="0"
@@ -48,19 +44,20 @@ function Home() {
               onChange={handleChange}
               className="slider"
             />
-            <span style = {{ marginLeft: '5px'}}>Stressed</span>
-          </div>
-          <div style={{ display: 'flex', gap: '50px', alignItems: 'center', justifyContent: 'center', marginTop: '50px', marginBottom: '30px'}}>
-            <button onClick={handleSubmit}>Submit</button>
-            <Link to="/settings">
-                <button className='settingsButton'>Settings</button>
-            </Link>
-          </div>
+          <span style = {{ marginLeft: '30px', fontSize: '25px'}}>Stressed</span>
         </div>
-      </div>
-      <h2 style={{ marginTop: '20px' }}>last 100 days</h2>
-      {/* Display grid */}
-      <div style={gridStyle}>{gridSquares}</div>
+        <div style={{ marginTop: '90px' }}>
+          <button onClick={handleSubmit} style={{ fontSize: '25px', padding: '10px 20px', borderRadius: '50px', border: '1px solid #676767' }}>Start Meditation</button>
+        </div>
+        <div style={{ position: 'absolute', bottom: '20px', right: '20px' }}>
+          <Link to="/settings">
+            <button style = {{ background: 'transparent', width: '70px'}}></button>
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
+              <path strokeLinecap="round" strokeLinejoin="round" d="m11.25 11.25.041-.02a.75.75 0 0 1 1.063.852l-.708 2.836a.75.75 0 0 0 1.063.853l.041-.021M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9-3.75h.008v.008H12V8.25Z" />
+            </svg>
+          </Link>
+        </div>
+
     </>
   );
 }
