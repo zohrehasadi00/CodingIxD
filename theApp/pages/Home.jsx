@@ -3,11 +3,16 @@ import { Link } from 'react-router-dom';
 import '../src/App.css';
 import './Slider.css';
 
+import '../firebaseConfig'; // Add this line prevent firebase not loading error
+import { getFirestore, addDoc, doc, setDoc, collection, getDocs } from "firebase/firestore";
+
 // Import your sound file
 import meditationSound from './gong.mp3';
 
 function Home() {
   const [value, setValue] = useState(0);
+
+  const db = getFirestore();
 
   // Create an Audio object with the sound file
   const [meditationAudio, setMeditationAudio] = useState(null);
@@ -19,7 +24,11 @@ function Home() {
     setMeditationAudio(audio);
   }, []);
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
+    const docRef = await setDoc(doc(db, "myCollection", "setStress"), {
+      field1: value,
+    });
+    alert("Document written to Database");
     if (meditationAudio) {
       // Play the sound when the button is clicked
       meditationAudio.play();
