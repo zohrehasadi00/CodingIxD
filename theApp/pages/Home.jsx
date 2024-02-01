@@ -12,6 +12,7 @@ import meditationSound from './gong.mp3';
 function Home() {
   const [value, setValue] = useState(0);
 
+  //initialize database
   const db = getFirestore();
 
   // Create an Audio object with the sound file
@@ -25,10 +26,12 @@ function Home() {
   }, []);
 
   const handleSubmit = async () => {
+    // Add document to database
     const docRef = await setDoc(doc(db, "myCollection", "setStress"), {
       field1: value,
     });
     alert("Document written to Database");
+    
     if (meditationAudio) {
       // Play the sound when the button is clicked
       meditationAudio.play();
