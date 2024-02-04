@@ -98,3 +98,6 @@ let averageHeartRate = 'no meditation';
 if (heartRateDictionary.count >= minReadingsThreshold) {
   averageHeartRate = (heartRateDictionary.sum / heartRateDictionary.count).toFixed(2);
 }
+return averageHeartRate;
+
+*/
