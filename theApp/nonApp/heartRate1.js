@@ -73,3 +73,28 @@ async function runScript() {
 }
 
 runScript();
+
+
+/*
+//Modify the API URL to fetch heart rate data for the specified time range:
+
+const lastMeditationTimestamp = ...; // Fetch from your database
+const apiUrl = `https://api.fitbit.com/1/user/-/activities/heart/date/${lastMeditationTimestamp}/1d.json`;
+
+
+//Adjust the processing logic:
+// Process heart rate data and calculate average
+const heartRateDictionary = { sum: 0, count: 0 };
+heartRateData.forEach(reading => {
+  const heartRate = reading.value.restingHeartRate;
+  if (heartRate !== undefined || !isNaN(heartRate)) {
+    heartRateDictionary.sum += heartRate;
+    heartRateDictionary.count += 1;
+  }
+});
+
+// Calculate average heart rate
+let averageHeartRate = 'no meditation';
+if (heartRateDictionary.count >= minReadingsThreshold) {
+  averageHeartRate = (heartRateDictionary.sum / heartRateDictionary.count).toFixed(2);
+}
