@@ -40,7 +40,7 @@ int baserate = 60; //trial base rate
 
 int IR = (int)HR / baserate * 100; // computes individual pulse index
 
-// Perceived Stress level
+// scalation for Perceived Stress level 
 
 float stress = 1.5; // test value
 int SR = (int) stress * 100; // stress rate calc
@@ -58,28 +58,22 @@ int BE1 = 255;
 
 // Stage 2:
 
-int R2 = 0;
-int G2 = 0;
+int R2 = 51;
+int G2 = 51;
 int B2 = 255;
 
 // Stage 3:
 
-int R3 = 51;
-int G3 = 51;
+int R3 = 102;
+int G3 = 102;
 int B3 = 255;
 
-// Stage 4:
 
-int R4 = 102;
-int G4 = 102;
-int B4 = 255;
+// Stage 4: 
 
-
-// Stage 5: 
-
-int R5 = 255;
-int G5 = 160;
-int B5 = 160;
+int R3 = 255;
+int G3 = 160;
+int B3 = 160;
 
 //––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––
 
@@ -87,13 +81,6 @@ int B5 = 160;
 
 float AC = 3000.00; // init for acceleration
 byte stepcount = 1;
-
-// Stress rates have to be implemented later
-
-//float stress = 1.5; // test value
-//int SR = (int) (stress * 100); // stress rate calc
-
-
 
 //––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––
 
@@ -118,7 +105,7 @@ void setup() {
   
       switch(IR){
     
-      case 0 ... 49:
+      case 0 ... 69:
         ValR = R1;
         ValG = G1;
         analogWrite(pinR, 255);
@@ -126,70 +113,61 @@ void setup() {
         analogWrite(pinB, 0);
         break;
 
-      case 50 ... 99:
-        ValR = R1;
-        ValG = G1;
+      case 70 ... 114:
+        ValR = R2;
+        ValG = G2;
         analogWrite(pinR, R1);
         analogWrite(pinG, G1);
         analogWrite(pinB, BE1);
         break;
 
-      case 100 ... 129:
-        ValR = R2;
-        ValG = G2;
-        analogWrite(pinR, R2);
-        analogWrite(pinG, G2);
-        analogWrite(pinB, B2);
-        break;
-
-      case 130 ... 159:
+      case 115 ... 164:
         ValR = R3;
         ValG = G3;
-        analogWrite(pinR, R3);
-        analogWrite(pinG, G3);
-        analogWrite(pinB, B3);   
+        analogWrite(pinR, R2);
+        analogWrite(pinG, G2);
+        analogWrite(pinB, B2);   
         break;
 
-      case 160 ... 189:
+      case 165 ... 204:
         ValR = R4;
         ValG = G4;
-        analogWrite(pinR, R4);
-        analogWrite(pinG, G4);
-        analogWrite(pinB, B4);    
+        analogWrite(pinR, R3);
+        analogWrite(pinG, G3);
+        analogWrite(pinB, B3);    
         break;
 
-      case 190 ... 500:
+      case 205 ... 500:
         ValR = R5;
         ValG = G5;
-        analogWrite(pinR, R5);
-        analogWrite(pinG, G5);
-        analogWrite(pinB, B5);     
+        analogWrite(pinR, R4);
+        analogWrite(pinG, G4);
+        analogWrite(pinB, B4);     
         break;
       }
 //––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––
-// for rotation velocity
+// for rotation speed - updates max speed level in relation to the perceived stress level
 
-//    switch(SR){
-//
-//      case 0 ... 99:
-//        AC = 2000.00;
-//
-//      case 100 ... 199:
-//        AC = 3000.00;
-//
-//      case 200 ... 299:
-//        AC = 4000.00;
-//
-//      case 300 ... 399:
-//        AC = 5000.00;
-//
-//      case 400 ... 500:
-//        AC = 6000.00;
-//    }
+    switch(SR){
+
+      case 0 ... 99:
+        stepper1.setMaxSpeed(1000);
+
+      case 100 ... 199:
+        stepper1.setMaxSpeed(1500);
+
+      case 200 ... 299:
+        stepper1.setMaxSpeed(2000);
+
+      case 300 ... 399:
+        stepper1.setMaxSpeed(2500);
+
+      case 400 ... 500:
+        stepper1.setMaxSpeed(3000);
+    }
 //––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––
 
     //For Motor -> needs to be adjusted for different rotation speeds
-    stepper1.setMaxSpeed(2000);
     stepper1.setAcceleration(AC);
     stepper1.run();
 
@@ -238,10 +216,11 @@ void leds(void *pvParameters) {
     xSemaphoreTake(taskMutex, portMAX_DELAY);
 
     if (isWhite) {
-      counter = counter + 3;   // bigger offset for easy checks
+      counter = counter + 1;   // normal offset, maybe needs to be adjusted for time
       fadetocolour(pinR, pinG);
+
     } else {
-      
+
       // the last colour
       analogWrite(pinR, 0);
       analogWrite(pinG, 0);
@@ -262,7 +241,7 @@ void loop() {
 void fadetocolour (int pin1, int pin2) { //gradually decreases both green and red light so everything turns bluer and bluer
   byte ValA = ValR - counter;
   byte ValB = ValG - counter;
-  if (ValA <= 15 || ValB <= 15){ // break condition
+  if (ValA <= 0 || ValB <= 0){ // break condition; adjusted from 15 -> 0 for new stages
     isWhite = false;
   }
 
