@@ -16,3 +16,16 @@ Our prototype is based on a ESP32 ­WROOM ­DA micro controller which concurrent
 
 # Conclusion
 Our overarching goal is to seamlessly merge health data with an engaging and culturally significant visualization. We are enthusiastic about the potential impact of the Balance project and are committed to continuous refinement.
+
+
+https://dev.fitbit.com/build/reference/web-api/
+
+https://cloud.google.com/terms
+
+https://firebase.google.com/terms
+
+https://firebase.google.com/docs
+
+https://docs.npmjs.com/policies/npm-license
+
+MIT: vscode, babel, React, Vite
