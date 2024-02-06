@@ -32,4 +32,4 @@ https://docs.npmjs.com/policies/npm-license
 
 https://www.cloudflare.com/de-de/website-terms/
 
-MIT: vscode, babel, React, Vite
+MIT: vscode, babel, React, Vite, SWC
