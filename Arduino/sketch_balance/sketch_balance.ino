@@ -14,6 +14,12 @@ const float Ratio1 = ((MS * (SPR / 360.00)) * 360.00);  //((MicroSteps * (full s
 
 //––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––
 
+// init for demonstration flag
+
+bool isDemo = true;
+
+//––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––
+
 //LED Setup
 
 int pinR = 15;
@@ -71,9 +77,9 @@ int B3 = 255;
 
 // Stage 4: 
 
-int R3 = 255;
-int G3 = 160;
-int B3 = 160;
+int R4 = 255;
+int G4 = 160;
+int B4 = 160;
 
 //––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––
 
@@ -92,6 +98,7 @@ SemaphoreHandle_t taskMutex;
 //––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––
 
 void setup() {
+  
     Serial.begin (115200);
 
 //––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––
@@ -101,50 +108,68 @@ void setup() {
      pinMode(pinG, OUTPUT);
      pinMode(pinB, OUTPUT);
 
+
+if (isDemo){
+
+// led init with demonstration values; here stage 
+
+    ValR = R4;
+    ValG = G4;
+    analogWrite(pinR, R4);
+    analogWrite(pinG, G4);
+    analogWrite(pinB, B4);    
+
+// rotation speed init, here for medium speed (2000)
+
+    stepper1.setMaxSpeed(2000);
+  
+} else {
+
   // depending on IR switch state - maybe needs to be adjusted for fine tune later; also refer to IR calc.
   
       switch(IR){
     
       case 0 ... 69:
-        ValR = R1;
-        ValG = G1;
+        ValR = 255;
+        ValG = 0;
         analogWrite(pinR, 255);
         analogWrite(pinG, 0);
         analogWrite(pinB, 0);
         break;
 
       case 70 ... 114:
-        ValR = R2;
-        ValG = G2;
+        ValR = R1;
+        ValG = G1;
         analogWrite(pinR, R1);
         analogWrite(pinG, G1);
         analogWrite(pinB, BE1);
         break;
 
       case 115 ... 164:
-        ValR = R3;
-        ValG = G3;
+        ValR = R2;
+        ValG = G2;
         analogWrite(pinR, R2);
         analogWrite(pinG, G2);
         analogWrite(pinB, B2);   
         break;
 
       case 165 ... 204:
-        ValR = R4;
-        ValG = G4;
+        ValR = R3;
+        ValG = G3;
         analogWrite(pinR, R3);
         analogWrite(pinG, G3);
         analogWrite(pinB, B3);    
         break;
 
       case 205 ... 500:
-        ValR = R5;
-        ValG = G5;
+        ValR = R4;
+        ValG = G4;
         analogWrite(pinR, R4);
         analogWrite(pinG, G4);
         analogWrite(pinB, B4);     
         break;
       }
+  
 //––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––
 // for rotation speed - updates max speed level in relation to the perceived stress level
 
@@ -165,6 +190,8 @@ void setup() {
       case 400 ... 500:
         stepper1.setMaxSpeed(3000);
     }
+
+}   
 //––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––
 
     //For Motor -> needs to be adjusted for different rotation speeds
