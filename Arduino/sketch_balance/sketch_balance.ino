@@ -290,12 +290,12 @@ void loop() {
 void fadetocolour (int pin1, int pin2) { //gradually decreases both green and red light so everything turns bluer and bluer
   byte ValA = ValR - counter;
   byte ValB = ValG - counter;
+  analogWrite(pin1, ValA);
+  analogWrite(pin2, ValB);
   if (ValA <= 30 || ValB <= 30) { // break condition motor
     doesRotate = false;
   if (ValA <= 20 || ValB <= 20){ // break condition leds
     isWhite = false;
   }
-
-  analogWrite(pin1, ValA);
-  analogWrite(pin2, ValB);
+  }
   }
