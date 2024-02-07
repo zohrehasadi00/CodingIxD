@@ -176,19 +176,19 @@ if (isDemo){
     switch(SR){
 
       case 0 ... 99:
-        stepper1.setMaxSpeed(1000);
+        stepper1.setMaxSpeed(1960);
 
       case 100 ... 199:
-        stepper1.setMaxSpeed(1500);
+        stepper1.setMaxSpeed(1970);
 
       case 200 ... 299:
-        stepper1.setMaxSpeed(2000);
+        stepper1.setMaxSpeed(1980);
 
       case 300 ... 399:
-        stepper1.setMaxSpeed(2500);
+        stepper1.setMaxSpeed(1990);
 
       case 400 ... 500:
-        stepper1.setMaxSpeed(3000);
+        stepper1.setMaxSpeed(2000);
     }
 
 }   
