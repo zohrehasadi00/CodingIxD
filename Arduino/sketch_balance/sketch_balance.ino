@@ -252,9 +252,7 @@ void stepmotor(void *pvParameters) {
         stepper1.moveTo(stepcount * Ratio1);  //go to a new position, in this case always 1 rotation further in same direction
         stepcount = stepcount + 1;            //adjust stepcount accordingly        
       } else {
-        stepper1.stop();
-        xSemaphoreGive(taskMutex); // giving back semaphore so that leds can continue to fade
-        vTaskDelete(NULL); // Terminate rotation        
+        stepper1.stop();      
       }
     xSemaphoreGive(taskMutex);
   }
@@ -267,7 +265,7 @@ void leds(void *pvParameters) {
     xSemaphoreTake(taskMutex, portMAX_DELAY);
 
     if (isWhite) {
-      counter = counter + 1;   // normal offset, maybe needs to be adjusted for time
+      counter = counter + 3;   // normal offset, maybe needs to be adjusted for time
       fadetocolour(pinR, pinG);
 
     } else {
@@ -275,9 +273,7 @@ void leds(void *pvParameters) {
       // the last colour
       analogWrite(pinR, LOW);
       analogWrite(pinG, LOW);
-      analogWrite(pinB, LOW);
-      xSemaphoreGive(taskMutex); // Give back the semaphore before exiting leds
-      vTaskDelete(NULL); // Terminate leds        
+      analogWrite(pinB, LOW);    
       
     }
 
@@ -294,9 +290,9 @@ void loop() {
 void fadetocolour (int pin1, int pin2) { //gradually decreases both green and red light so everything turns bluer and bluer
   byte ValA = ValR - counter;
   byte ValB = ValG - counter;
-  if (ValA <= 5 || ValB <= 5) { // break condition; enough so that motor stops before leds fade 
+  if (ValA <= 30 || ValB <= 30) { // break condition motor
     doesRotate = false;
-  if (ValA <= 0 || ValB <= 0){ // break condition; adjusted from 15 -> 0 for new stages
+  if (ValA <= 20 || ValB <= 20){ // break condition leds
     isWhite = false;
   }
 
