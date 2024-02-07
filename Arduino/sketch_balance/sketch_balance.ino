@@ -30,8 +30,8 @@ byte ValR = 0; // red value for fadetocolour
 byte ValG = 0; // green value for fadetocolour
 int counter = 0; //counter for offset for fadetocolour function
 
-bool isWhite = true; // bool for termination check which needs to be fixed later
-
+bool isWhite = true; // bool for termination check leds
+bool doesRotate = true; // bool for termination check motor
 
 //––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––
 
@@ -227,10 +227,15 @@ void stepmotor(void *pvParameters) {
   while (1) {
     xSemaphoreTake(taskMutex, portMAX_DELAY);
 
-    stepper1.run();
-    stepper1.moveTo(stepcount * Ratio1);  //go to a new position, in this case always 1 rotation further in same direction
-    stepcount = stepcount + 1;            //adjust stepcount accordingly
-
+      if (doesRotate){
+        stepper1.run();
+        stepper1.moveTo(stepcount * Ratio1);  //go to a new position, in this case always 1 rotation further in same direction
+        stepcount = stepcount + 1;            //adjust stepcount accordingly        
+      } else {
+        stepper1.stop();
+        xSemaphoreGive(taskMutex); // giving back semaphore so that leds can continue to fade
+        vTaskDelete(NULL); // Terminate rotation        
+      }
     xSemaphoreGive(taskMutex);
   }
 }
@@ -248,9 +253,11 @@ void leds(void *pvParameters) {
     } else {
 
       // the last colour
-      analogWrite(pinR, 0);
-      analogWrite(pinG, 0);
-      analogWrite(pinB, 0); 
+      analogWrite(pinR, LOW);
+      analogWrite(pinG, LOW);
+      analogWrite(pinB, LOW);
+      xSemaphoreGive(taskMutex); // Give back the semaphore before exiting leds
+      vTaskDelete(NULL); // Terminate leds        
       
     }
 
@@ -267,6 +274,8 @@ void loop() {
 void fadetocolour (int pin1, int pin2) { //gradually decreases both green and red light so everything turns bluer and bluer
   byte ValA = ValR - counter;
   byte ValB = ValG - counter;
+  if (ValA <= 5 || ValB <= 5) { // break condition; enough so that motor stops before leds fade 
+    doesRotate = false;
   if (ValA <= 0 || ValB <= 0){ // break condition; adjusted from 15 -> 0 for new stages
     isWhite = false;
   }
