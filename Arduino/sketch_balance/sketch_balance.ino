@@ -1,4 +1,9 @@
 #include <AccelStepper.h>  // from https://www.airspayce.com/mikem/arduino/AccelStepper/
+#include <WiFi.h>
+
+const char* ssid = "SSID"; //need to be adjusted accordingly
+const char* password = "PASSWORD"; //need to be adjusted accordingly
+
 
 // https://www.circuitstate.com/tutorials/how-to-write-parallel-multitasking-applications-for-esp32-using-freertos-arduino/ relate to this for concurrency
 
@@ -101,6 +106,21 @@ void setup() {
     Serial.begin (115200);
 
 //––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––
+
+// Wifi setup
+
+
+    Serial.println("Connecting to WiFi...");
+    WiFi.begin(ssid, password);
+
+    while (WiFi.status() != WL_CONNECTED) {
+        Serial.println("Connecting...");
+    }
+
+    Serial.println("Connected to the WiFi network");
+
+
+//––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––  
 
       //For LED
      pinMode(pinR, OUTPUT);
