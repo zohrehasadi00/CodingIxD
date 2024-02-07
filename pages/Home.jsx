@@ -11,6 +11,8 @@ import meditationSound from './gong.mp3';
 
 function Home() {
   const [value, setValue] = useState(0);
+  let [storedValues, setStoredValues] = useState([]);
+  
 
   //initialize database
   const db = getFirestore();
@@ -35,6 +37,15 @@ function Home() {
     } catch (error) {
       console.error("Error writing document:", error);
     }
+
+    const fetchDataFromFirestore = async () => {
+      const querySnapshot = await getDocs(collection(db, "myCollection"));
+      const temporaryArr = [];
+      querySnapshot.forEach((doc) => {
+          temporaryArr.push(doc.data());
+      });
+      setStoredValues(temporaryArr);
+    };
     
     if (meditationAudio) {
       // Play the sound when the button is clicked
