@@ -48,8 +48,7 @@ int IR = (int)HR / baserate * 100; // computes individual pulse index
 
 // scalation for Perceived Stress level 
 
-float stress = 1.5; // test value
-int SR = (int) stress * 100; // stress rate calc
+int stress = 100; // stress value for test
 
 //––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––
 
@@ -111,7 +110,7 @@ void setup() {
 
 if (isDemo){
 
-// led init with demonstration values; here stage 
+// led init with demonstration values; here stage 4
 
     ValR = R4;
     ValG = G4;
@@ -175,19 +174,19 @@ if (isDemo){
 
     switch(SR){
 
-      case 0 ... 99:
+      case 0 ... 19:
         stepper1.setMaxSpeed(1960);
 
-      case 100 ... 199:
+      case 20 ... 39:
         stepper1.setMaxSpeed(1970);
 
-      case 200 ... 299:
+      case 40 ... 59:
         stepper1.setMaxSpeed(1980);
 
-      case 300 ... 399:
+      case 60 ... 79:
         stepper1.setMaxSpeed(1990);
 
-      case 400 ... 500:
+      case 80 ... 100:
         stepper1.setMaxSpeed(2000);
     }
 
