@@ -172,7 +172,7 @@ if (isDemo){
 //––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––
 // for rotation speed - updates max speed level in relation to the perceived stress level
 
-    switch(SR){
+    switch(stress){
 
       case 0 ... 19:
         stepper1.setMaxSpeed(1960);
