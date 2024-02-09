@@ -4,10 +4,11 @@ import '../src/App.css';
 import './Slider.css';
 
 import '../firebaseConfig'; // Add this line prevent firebase not loading error
-import { getFirestore, addDoc, doc, setDoc, collection, getDocs } from "firebase/firestore";
+import 'firebase/database'
 
 // Import your sound file
 import meditationSound from './gong.mp3';
+import { getDatabase, ref, set } from 'firebase/database';
 
 function Home() {
   const [value, setValue] = useState(0);
@@ -15,7 +16,7 @@ function Home() {
   
 
   //initialize database
-  const db = getFirestore();
+  const db = getDatabase();
 
   // Create an Audio object with the sound file
   const [meditationAudio, setMeditationAudio] = useState(null);
@@ -30,22 +31,13 @@ function Home() {
   const handleSubmit = async () => {
     try {
       // Add document to database
-      const docRef = await setDoc(doc(db, "myCollection", "setStress"), {
-        field1: value,
+      const docRef = await set(ref(db, 'Stress'), {
+        value,
       });
       console.log("Document written to Database");
     } catch (error) {
       console.error("Error writing document:", error);
     }
-
-    const fetchDataFromFirestore = async () => {
-      const querySnapshot = await getDocs(collection(db, "myCollection"));
-      const temporaryArr = [];
-      querySnapshot.forEach((doc) => {
-          temporaryArr.push(doc.data());
-      });
-      setStoredValues(temporaryArr);
-    };
     
     if (meditationAudio) {
       // Play the sound when the button is clicked
